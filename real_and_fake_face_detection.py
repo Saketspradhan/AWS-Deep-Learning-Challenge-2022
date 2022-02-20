@@ -23,6 +23,10 @@ from tensorflow.keras.layers import (Activation, BatchNormalization, Conv2D,
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.optimizers import Adam
 
+from habana_frameworks.tensorflow import load_habana_module
+tf.compact.v1.disable_eager_execution()
+load_habana_module()
+
 # real = "/content/real_and_fake_face_detection/real_and_fake_face/training_real"
 # fake = "/content/real_and_fake_face_detection/real_and_fake_face/training_fake"
 # datadir = "/content/real_and_fake_face"
