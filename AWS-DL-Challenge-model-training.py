@@ -5,25 +5,22 @@ import itertools
 import os
 import random
 
+# import keras
 import cv2
-import keras
 import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf
 from IPython.display import Image, display
-from keras.layers import Activation
-from keras.layers.convolutional import Conv2D
-from keras.layers.core import Dense, Flatten
-from keras.metrics import categorical_crossentropy
-from keras.models import Sequential
-from keras.preprocessing.image import ImageDataGenerator
 from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import train_test_split
+from tensorflow import keras
 from tensorflow.keras.layers import (Activation, BatchNormalization, Conv2D,
                                      Dense, Dropout, Flatten, MaxPooling2D,
                                      SeparableConv2D)
+from tensorflow.keras.metrics import categorical_crossentropy
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 real = "Dataset/real_and_fake_face/training_fake"
 fake = "Dataset/real_and_fake_face/training_fake"
