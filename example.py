@@ -20,3 +20,5 @@ model.compile(optimizer=optimizer, loss=loss, metrics=['accuracy'])
 model.fit(x_train, y_train, epochs=5, batch_size=128)
 
 model.evaluate(x_test, y_test)
+
+model.save('Raj-ki-gf.h5')
