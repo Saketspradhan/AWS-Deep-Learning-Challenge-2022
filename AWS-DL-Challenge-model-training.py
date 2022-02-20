@@ -1,6 +1,3 @@
-from habana_frameworks.tensorflow import load_habana_module
-load_habana_module()
-
 import itertools
 import os
 import random
@@ -21,6 +18,10 @@ from tensorflow.keras.metrics import categorical_crossentropy
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
+
+from habana_frameworks.tensorflow import load_habana_module
+tf.compact.v1.disable_eager_execution()
+load_habana_module()
 
 real = "Dataset/real_and_fake_face/training_fake"
 fake = "Dataset/real_and_fake_face/training_fake"
