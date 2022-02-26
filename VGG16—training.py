@@ -1,6 +1,7 @@
 import itertools
 import os
 import random
+from xml.etree.ElementInclude import include
 
 import cv2
 import matplotlib.pyplot as plt
@@ -18,10 +19,13 @@ from tensorflow.keras.metrics import categorical_crossentropy
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from tensorflow.keras.applications.vgg16 import VGG16
+from tensorflow.keras.applications.vgg16 import preprocess_input
 
 from habana_frameworks.tensorflow import load_habana_module
 tensorflow.compact.v1.disable_eager_execution()
 load_habana_module()
+
 
 real = "Dataset/real_and_fake_face/training_fake"
 fake = "Dataset/real_and_fake_face/training_fake"
@@ -135,7 +139,13 @@ val_loss, val_acc = model.evaluate(X_test, y_test)
 print(val_loss)
 print(val_acc)
 
-vgg16_model = keras.applications.vgg16.VGG16()
+
+vgg16_model= tensorflow.keras.applications.vgg16.VGG16(
+    include_top=True, weights='imagenet', input_tensor=None,
+    input_shape=None, pooling=None, classes=1000,
+    classifier_activation='softmax'
+)
+
 vgg16_model.summary()
 print(type(vgg16_model))
 
