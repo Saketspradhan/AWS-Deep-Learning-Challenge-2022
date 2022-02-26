@@ -54,14 +54,6 @@ categories = ["training_real" , "training_fake"]
 # 0 ——> Real (Original) images
 # 1 ——> Fake (Photoshopped/Morphed) images
 
-for category in categories:
-    path = os.path.join(datadir, category)
-    for img in os.listdir(path):
-        img_array = cv2.imread(os.path.join(path,img), cv2.IMREAD_GRAYSCALE)
-        break
-    break
-
-
 def create_training_data():
     for category in categories:
         path = os.path.join(datadir, category)
@@ -92,12 +84,12 @@ y = np.array(y)
 print(X.shape)
 print(y.shape)
 print(np.unique(y, return_counts = True))
-# The answer should be: (array([0, 1]), array([1081,  960])) 
+# Expected Output: (array([0, 1]), array([1081,  960])) 
 
 print(y[1:10])
 
 X = X/255.0
-# Normalization
+# Performing Normalization
 
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.1, random_state=42)
@@ -111,7 +103,7 @@ print(y_test[1:10])
 print(np.unique(y_train, return_counts = True))
 print(np.unique(y_test, return_counts = True))
 
-train_x = tensorflow.keras.utils.normalize(X_train,axis=1)
+train_x = tensorflow.keras.utils.normalize(X_train, axis=1)
 test_x = tensorflow.keras.utils.normalize(X_test, axis=1)
 
 model = tensorflow.keras.models.Sequential([
