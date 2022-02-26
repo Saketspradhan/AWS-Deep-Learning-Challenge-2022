@@ -6,6 +6,7 @@ from xml.etree.ElementInclude import include
 import cv2
 import matplotlib.pyplot as plt
 import numpy as np
+import PIL
 import tensorflow
 from IPython.display import Image, display
 from sklearn.metrics import confusion_matrix
@@ -27,12 +28,15 @@ tensorflow.compact.v1.disable_eager_execution()
 load_habana_module()
 
 
-real = "Dataset/real_and_fake_face/training_fake"
+real = "Dataset/real_and_fake_face/training_real"
 fake = "Dataset/real_and_fake_face/training_fake"
 datadir = "Dataset/real_and_fake_face"
 
 real_path = os.listdir(real)
 fake_path = os.listdir(fake)
+
+training_data = []
+IMG_SIZE = 224
 
 def load_img(path):
     image = cv2.imread(path)
@@ -57,8 +61,6 @@ for category in categories:
         break
     break
 
-training_data = []
-IMG_SIZE = 224
 
 def create_training_data():
     for category in categories:
