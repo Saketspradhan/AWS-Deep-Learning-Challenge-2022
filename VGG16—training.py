@@ -92,7 +92,7 @@ X = X/255.0
 # Performing Normalization
 
 X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.1, random_state=42)
+    X, y, test_size=0.2, random_state=42)
 
 print("Shape of test_x: ", X_train.shape)
 print("Shape of train_y: ", y_train.shape)
