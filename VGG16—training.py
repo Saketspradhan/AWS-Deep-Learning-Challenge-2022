@@ -1,3 +1,7 @@
+from habana_frameworks.tensorflow import load_habana_module
+# tensorflow.compact.v1.disable_eager_execution()
+load_habana_module()
+
 import itertools
 import os
 import random
@@ -14,6 +18,7 @@ from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import train_test_split
 from tensorflow import keras
 # from tensorflow.keras import optimizers, Dense, Flatten, layers
+# from tensorflow.keras import optimizers
 from tensorflow.keras.layers import (Activation, BatchNormalization, Conv2D,
                                      Dense, Dropout, Flatten, MaxPooling2D,
                                      SeparableConv2D)
@@ -24,10 +29,6 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.applications.vgg16 import VGG16
 from tensorflow.keras.applications.vgg16 import preprocess_input
-
-from habana_frameworks.tensorflow import load_habana_module
-tensorflow.compact.v1.disable_eager_execution()
-load_habana_module()
 
 
 # listing local directories
@@ -130,7 +131,7 @@ model = tensorflow.keras.models.Sequential([
 # Alternative for last layer try: model.add(Dense(units=1, activation='sigmoid'))
 
 # Customizing SGD Optimizer
-sgd = optimizers.SGD(learning_rate=0.01, decay=1e-6, momentum=0.9, nesterov=True)
+sgd = tensorflow.keras.optimizers.SGD(learning_rate=0.01, decay=1e-6, momentum=0.9, nesterov=True)
 
 model.compile(optimizer='adam',
               loss='sparse_categorical_crossentropy',
@@ -177,7 +178,7 @@ model.add(Dense(units=2, activation='softmax'))
 # Alternative try: model.add(Dense(units=1, activation='sigmoid'))
 
 # Customizing SGD Optimizer
-sgd = optimizers.SGD(learning_rate=0.01, decay=1e-6, momentum=0.9, nesterov=True)
+sgd = tensorflow.keras.optimizers.SGD(learning_rate=0.01, decay=1e-6, momentum=0.9, nesterov=True)
 
 model.compile(optimizer='adam',
               loss='sparse_categorical_crossentropy',
