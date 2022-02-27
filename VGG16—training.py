@@ -14,7 +14,7 @@ from IPython.display import Image, display
 from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import train_test_split
 from tensorflow import keras
-from tensorflow.python.keras import optimizers
+from tensorflow.keras import optimizers
 from tensorflow.keras import layers
 from tensorflow.keras.layers import (Activation, BatchNormalization, Conv2D,
                                      Dense, Dropout, Flatten, MaxPooling2D,
