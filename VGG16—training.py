@@ -26,7 +26,7 @@ from tensorflow.keras.applications.vgg16 import VGG16
 from tensorflow.keras.applications.vgg16 import preprocess_input
 
 from habana_frameworks.tensorflow import load_habana_module
-# tensorflow.compact.v1.disable_eager_execution()
+tensorflow.compact.v1.disable_eager_execution()
 load_habana_module()
 
 
