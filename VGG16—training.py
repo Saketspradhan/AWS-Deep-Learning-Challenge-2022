@@ -8,18 +8,17 @@ import matplotlib.pyplot as plt
 import numpy as np
 import PIL
 import tensorflow
-import tensorflow as tf
 
 from IPython.display import Image, display
 from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import train_test_split
 from tensorflow import keras
-from tensorflow.keras import optimizers
-from tensorflow.keras import layers
+from tensorflow.keras import optimizers, Dense, Flatten, layers
 from tensorflow.keras.layers import (Activation, BatchNormalization, Conv2D,
                                      Dense, Dropout, Flatten, MaxPooling2D,
                                      SeparableConv2D)
-from tensorflow.keras.metrics import categorical_crossentropy
+from tensorflow.keras.metrics import (categorical_crossentropy, 
+                                    sparse_categorical_crossentropy)
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
@@ -27,7 +26,7 @@ from tensorflow.keras.applications.vgg16 import VGG16
 from tensorflow.keras.applications.vgg16 import preprocess_input
 
 from habana_frameworks.tensorflow import load_habana_module
-# tf.compact.v1.disable_eager_execution()
+tensorflow.compact.v1.disable_eager_execution()
 load_habana_module()
 
 
@@ -97,7 +96,7 @@ X = X/255.0
 
 # Dataset split into training and testing groups
 X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.2, random_state=42)
+    X, y, test_size=0.1, random_state=42)
 
 print("Shape of test_x: ", X_train.shape)
 print("Shape of train_y: ", y_train.shape)
@@ -114,7 +113,7 @@ test_x = tensorflow.keras.utils.normalize(X_test, axis=1)
 # First Sequential Model
 model = tensorflow.keras.models.Sequential([
             tensorflow.keras.layers.Conv2D(filters=64, kernel_size=(3,3), 
-                            padding="same", activation = 'relu',input_shape= X.shape[1:]),
+                            padding="same", activation = 'relu', input_shape= X.shape[1:]),
             tensorflow.keras.layers.Conv2D(filters=64, kernel_size=(3,3), 
                             padding="same", activation = 'relu'),
             tensorflow.keras.layers.MaxPooling2D(pool_size=(2,2)),
@@ -130,14 +129,15 @@ model = tensorflow.keras.models.Sequential([
 ])
 # Alternative for last layer try: model.add(Dense(units=1, activation='sigmoid'))
 
-sgd = optimizers.SGD(lr = 0.01, decay = 1e-6, momentum = 0.9, nesterov = True)
+# Customizing SGD Optimizer
+sgd = optimizers.SGD(learning_rate=0.01, decay=1e-6, momentum=0.9, nesterov=True)
 
 model.compile(optimizer='adam',
               loss='sparse_categorical_crossentropy',
               metrics=['accuracy'])
 # Alternative for optimizer=sgd
 
-hist = model.fit(X_train,y_train, batch_size=20, epochs = 7, validation_split=0.1)
+hist = model.fit(X_train,y_train, batch_size=20, epochs=7, validation_split=0.1)
 
 model.save('first_model.h5')
 
@@ -147,8 +147,12 @@ print(val_acc)
 
 # Importing VGG-16 Model 
 vgg16_model= tensorflow.keras.applications.vgg16.VGG16(
-    include_top=True, weights='imagenet', input_tensor=None,
-    input_shape=None, pooling=None, classes=1000,
+    include_top=True, 
+    weights='imagenet', 
+    input_tensor=None,
+    input_shape=None, 
+    pooling=None, 
+    classes=1000,
     classifier_activation='softmax'
 )
 
@@ -172,7 +176,8 @@ for layer in model.layers: layer.trainable = False
 model.add(Dense(units=2, activation='softmax'))
 # Alternative try: model.add(Dense(units=1, activation='sigmoid'))
 
-sgd=optimizers.SGD(lr = 0.01, decay = 1e-6, momentum = 0.9, nesterov = True)
+# Customizing SGD Optimizer
+sgd = optimizers.SGD(learning_rate=0.01, decay=1e-6, momentum=0.9, nesterov=True)
 
 model.compile(optimizer='adam',
               loss='sparse_categorical_crossentropy',
@@ -183,3 +188,8 @@ hist = model.fit(X_train,y_train, batch_size=20, epochs = 50, validation_split=0
 
 model.save('final_model.h5')
 # Download this model
+
+val_loss, val_acc = model.evaluate(X_test, y_test)
+print(val_loss)
+print(val_acc)
+# Final accuracy and loss
