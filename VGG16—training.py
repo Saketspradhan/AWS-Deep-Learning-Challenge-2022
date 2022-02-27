@@ -17,8 +17,8 @@ from tensorflow.keras import optimizers, Dense, Flatten, layers
 from tensorflow.keras.layers import (Activation, BatchNormalization, Conv2D,
                                      Dense, Dropout, Flatten, MaxPooling2D,
                                      SeparableConv2D)
-from tensorflow.keras.metrics import (categorical_crossentropy, 
-                                    sparse_categorical_crossentropy)
+from tensorflow.keras.metrics import categorical_crossentropy
+from tensorflow.keras.metrics import sparse_categorical_crossentropy
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
@@ -26,7 +26,7 @@ from tensorflow.keras.applications.vgg16 import VGG16
 from tensorflow.keras.applications.vgg16 import preprocess_input
 
 from habana_frameworks.tensorflow import load_habana_module
-tensorflow.compact.v1.disable_eager_execution()
+# tensorflow.compact.v1.disable_eager_execution()
 load_habana_module()
 
 
