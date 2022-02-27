@@ -13,14 +13,14 @@ from IPython.display import Image, display
 from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import train_test_split
 from tensorflow import keras
-from tensorflow.keras import optimizers, Dense, Flatten, layers
+# from tensorflow.keras import optimizers, Dense, Flatten, layers
 from tensorflow.keras.layers import (Activation, BatchNormalization, Conv2D,
                                      Dense, Dropout, Flatten, MaxPooling2D,
                                      SeparableConv2D)
-from tensorflow.keras.metrics import categorical_crossentropy
-from tensorflow.keras.metrics import sparse_categorical_crossentropy
+# from tensorflow.keras.metrics import categorical_crossentropy
+# from tensorflow.keras.metrics import sparse_categorical_crossentropy
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.optimizers import Adam
+# from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.applications.vgg16 import VGG16
 from tensorflow.keras.applications.vgg16 import preprocess_input
