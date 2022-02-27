@@ -1,3 +1,7 @@
+from habana_frameworks.tensorflow import load_habana_module
+# tensorflow.compact.v1.disable_eager_execution()
+load_habana_module()
+
 import itertools
 import os
 import random
@@ -12,25 +16,24 @@ import tensorflow
 from IPython.display import Image, display
 from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import train_test_split
+
 from tensorflow import keras
-from tensorflow.python.keras import optimizers
-from tensorflow.keras import Dense, Flatten, layers
+# from tensorflow.keras import optimizers, Dense, Flatten, layers
+# from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.layers import (Activation, BatchNormalization, Conv2D,
                                      Dense, Dropout, Flatten, MaxPooling2D,
                                      SeparableConv2D)
-from tensorflow.keras.metrics import categorical_crossentropy
+# from tensorflow.keras.metrics import (categorical_crossentropy, 
+#                                       sparse_categorical_crossentropy)
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.applications.resnet50 import ResNet50
 # from keras.applications.resnet50 import ResNet50
 # from keras.applications.resnet import ResNet50
 from tensorflow.keras.applications.resnet import preprocess_input
 
-from habana_frameworks.tensorflow import load_habana_module
-tensorflow.compact.v1.disable_eager_execution()
-load_habana_module()
 
+# listing all local directories
 real = "Dataset/real_and_fake_face/training_real"
 fake = "Dataset/real_and_fake_face/training_fake"
 datadir = "Dataset/real_and_fake_face"
@@ -41,6 +44,7 @@ fake_path = os.listdir(fake)
 training_data = []
 IMG_SIZE = 224
 
+# Preprocessing for testing images
 def load_img(path):
     image = cv2.imread(path)
     image = cv2.resize(image, (224, 224))
@@ -53,7 +57,9 @@ def prepare(image):
     return new_array.reshape(-1, IMG_SIZE,IMG_SIZE,3)
 
 
-categories = ["training_real" , "training_fake"]
+categories = ["training_real", "training_fake"]
+
+# Correspondance: 
 # 0 ——> Real (Original) images
 # 1 ——> Fake (Photoshopped/Morphed) images
 
@@ -73,6 +79,8 @@ create_training_data()
 
 training_data = np.array(training_data)
 print(training_data.shape)
+
+# Randomizing the dataset
 np.random.shuffle(training_data)
 
 X, y = [], []
@@ -86,7 +94,7 @@ y = np.array(y)
 
 print(X.shape)
 print(y.shape)
-print(np.unique(y, return_counts = True))
+print(np.unique(y, return_counts=True))
 # Expected Output: (array([0, 1]), array([1081,  960])) 
 
 print(y[1:10])
@@ -96,7 +104,7 @@ X = X/255.0
 
 # Dataset split into training and testing groups
 X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.2, random_state=42)
+    X, y, test_size=0.1, random_state=42)
 
 print("Shape of test_x: ", X_train.shape)
 print("Shape of train_y: ", y_train.shape)
@@ -104,8 +112,8 @@ print("Shape of test_x: ", X_test.shape)
 print("Shape of test_y: ", y_test.shape)
 
 print(y_test[1:10])
-print(np.unique(y_train, return_counts = True))
-print(np.unique(y_test, return_counts = True))
+print(np.unique(y_train, return_counts=True))
+print(np.unique(y_test, return_counts=True))
 
 train_x = tensorflow.keras.utils.normalize(X_train, axis=1)
 test_x = tensorflow.keras.utils.normalize(X_test, axis=1)
@@ -120,7 +128,7 @@ pretrained_model=tensorflow.keras.applications.resnet50.ResNet50(
     input_tensor=None,
     input_shape=None,
     pooling="avg",
-    classes=2,
+    classes=1000,
 )
 
 for layer in pretrained_model.layers: layer.trainable=False
@@ -133,7 +141,7 @@ resnet_model.add(Dense(units=2, activation='softmax'))
 
 resnet_model.summary()
 
-sgd = optimizers.SGD(learning_rate=0.001, decay=1e-6, momentum=0.9, nesterov = True)
+sgd = tensorflow.keras.optimizers.SGD(learning_rate=0.001, decay=1e-6, momentum=0.9, nesterov=True)
 
 resnet_model.compile(optimizer=sgd,
             loss='categorical_crossentropy',
@@ -144,3 +152,8 @@ history = resnet_model.fit(X_train, validation_data=y_train, epochs=10)
 
 resnet_model.save('resnet_model_final.h5')
 # Download this model
+
+val_loss, val_acc = resnet_model.evaluate(X_test, y_test)
+print(val_loss)
+print(val_acc)
+# Final accuracy and loss
