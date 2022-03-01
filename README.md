@@ -49,20 +49,4 @@ We also plan to add a feature that changes the color and the opacity of the face
 
 With sufficient time at our hands in the approaching weeks, we are keen on continuing this project further and improving upon the model's accuracy as well as cleaning and segmenting the code. We also wish to work on the internal operations of the systems and handle the workflow more efficiently and effectively, so as to reduce the latency between the request and the response. 
 
-## Training Images 
-VGG16 Model -
-![1](https://user-images.githubusercontent.com/65075827/156249085-e520dfe4-da49-45a8-9bde-0ef630880251.jpeg)
-
-![2](https://user-images.githubusercontent.com/65075827/156249097-4d0a875c-023b-44fa-835a-06be2a5eec53.jpeg)
-
-![3](https://user-images.githubusercontent.com/65075827/156249104-e83e76dc-46ee-4f60-989a-7049a5d62be8.jpeg)
-
-![5](https://user-images.githubusercontent.com/65075827/156249124-8a56f837-c608-48a6-9b35-71f320c6d190.jpeg)
-
-![6](https://user-images.githubusercontent.com/65075827/156249136-cae90fe7-0c22-4b34-9933-9a1f31690b8d.jpeg)
-
-Resnet 50 Model-
-![8](https://user-images.githubusercontent.com/65075827/156249383-86f6a93f-cf83-4220-9a01-e91beb6422f8.jpg)
-
-![7](https://user-images.githubusercontent.com/65075827/156249160-e028a4c7-0343-45b9-a793-b74f67a7da30.jpg)
 
