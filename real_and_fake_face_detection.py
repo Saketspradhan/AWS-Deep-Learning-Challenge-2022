@@ -27,10 +27,6 @@ from habana_frameworks.tensorflow import load_habana_module
 tf.compact.v1.disable_eager_execution()
 load_habana_module()
 
-# real = "/content/real_and_fake_face_detection/real_and_fake_face/training_real"
-# fake = "/content/real_and_fake_face_detection/real_and_fake_face/training_fake"
-# datadir = "/content/real_and_fake_face"
-
 real = "Dataset/real_and_fake_face/training_fake"
 fake = "Dataset/real_and_fake_face/training_fake"
 datadir = "Dataset/real_and_fake_face"
@@ -55,9 +51,7 @@ for category in categories:
 
 training_data = []
 IMG_SIZE = 224
-
-# This means 0 will indicate Real facial Images and 1 to Fake facial Images.
-categories = ["training_real" , "training_fake"]
+categories = ["training_real" , "training_fake"] # 0 -> Real and 1 -> Fake 
 
 def create_training_data():
     for category in categories:
@@ -70,6 +64,7 @@ def create_training_data():
                 training_data.append([new_array,class_num])
             except: pass
 create_training_data()
+
 
 training_data = np.array(training_data)
 np.random.shuffle(training_data)
@@ -91,8 +86,7 @@ print(X.shape)
 print(y.shape)
 print(np.unique(y, return_counts = True))
 
-# (array([0, 1]), array([1081,  960])) This should be the answer
-print(y[1:10])
+print(y[1:10]) # Expected -> (array([0, 1]), array([1081,  960])) 
 
 # Normalization 
 X = X/255.0
@@ -131,14 +125,15 @@ model.compile(optimizer='adam',
               loss='sparse_categorical_crossentropy',
               metrics=['accuracy'])
 
-# hist = model.fit(X_train,y_train, batch_size=20, epochs = 5, validation_split=0.1)
 
-# epochs = 5
-# train_loss = hist.history['loss']
-# val_loss = hist.history['val_loss']
-# train_acc = hist.history['accuracy']
-# val_acc = hist.history['val_accuracy']
-# xc = range(epochs)
+hist = model.fit(X_train,y_train, batch_size=20, epochs = 5, validation_split=0.1)
+
+epochs = 5
+train_loss = hist.history['loss']
+val_loss = hist.history['val_loss']
+train_acc = hist.history['accuracy']
+val_acc = hist.history['val_accuracy']
+xc = range(epochs)
 
 # plt.figure(1,figsize=(7,5))
 # plt.plot(xc,train_loss)
@@ -166,55 +161,52 @@ model.compile(optimizer='adam',
 # print(val_loss)
 # print(val_acc)
 
-# predictions = model.predict(X_test)
-# predictions
+predictions = model.predict(X_test)
+predictions
 
-# rounded_predictions=model.predict(x = X_test, batch_size=10, verbose=0) 
-# classes_x=np.argmax(rounded_predictions,axis=1)
+rounded_predictions=model.predict(x = X_test, batch_size=10, verbose=0) 
+classes_x=np.argmax(rounded_predictions,axis=1)
 
-# for i in rounded_predictions[:10]:
-#     print(i)
+for i in rounded_predictions[:10]: print(i)
 
-# Commented out IPython magic to ensure Python compatibility.
 # %matplotlib inline
 
 # cm = confusion_matrix(y_test,rounded_predictions)
 
-# def plot_confusion_matrix(cm, classes,
-#     normalize=False,
-#     title='Confusion matrix',
-#     cmap=plt.cm.Blues):
-#     """
-#     This function prints and plots the confusion matrix.
-#     Normalization can be applied by setting `normalize=True`.
-#     """
-#     plt.imshow(cm, interpolation='nearest', cmap=cmap)
-#     plt.title(title)
-#     plt.colorbar()
-#     tick_marks = np.arange(len(classes))
-#     plt.xticks(tick_marks, classes, rotation=45)
-#     plt.yticks(tick_marks, classes)
+def plot_confusion_matrix(cm, classes,
+    normalize=False,
+    title='Confusion matrix',
+    cmap=plt.cm.Blues):
+    """
+    This function prints and plots the confusion matrix.
+    Normalization can be applied by setting `normalize=True`.
+    """
+      
+    plt.imshow(cm, interpolation='nearest', cmap=cmap)
+    plt.title(title)
+    plt.colorbar()
+    tick_marks = np.arange(len(classes))
+    plt.xticks(tick_marks, classes, rotation=45)
+    plt.yticks(tick_marks, classes)
 
-#     if normalize:
-#         cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
-#         print("Normalized confusion matrix")
-#     else:
-#         print('Confusion matrix, without normalization')
+    if normalize:
+        cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+        print("Normalized confusion matrix")
+    else: print('Confusion matrix, without normalization')
+    print(cm)
 
-#     print(cm)
+    thresh = cm.max() / 2.
+    for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
+        plt.text(j, i, cm[i, j],
+                 horizontalalignment="center",
+                 color="black" if cm[i, j] > thresh else "black")
 
-#     thresh = cm.max() / 2.
-#     for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
-#         plt.text(j, i, cm[i, j],
-#                  horizontalalignment="center",
-#                  color="black" if cm[i, j] > thresh else "black")
+    plt.tight_layout()
+    plt.ylabel('True label')
+    plt.xlabel('Predicted label')
 
-#     plt.tight_layout()
-#     plt.ylabel('True label')
-#     plt.xlabel('Predicted label')
-
-# cm_plot_labels = ['Real', 'Fake']
-# plot_confusion_matrix(cm=cm, classes=cm_plot_labels, title='Confusion Matrix')
+cm_plot_labels = ['Real', 'Fake']
+plot_confusion_matrix(cm=cm, classes=cm_plot_labels, title='Confusion Matrix')
 
 """- This means our model predicted every single time and got the 54% accuracy.
 
@@ -225,13 +217,12 @@ model.compile(optimizer='adam',
 
 # %matplotlib inline
 
-## I don't know why but without running this cell the below code is shown an error. 
+## I don't know why but without running this cell the below code is showing errors. 
 ## Running all these imports again solved it.
 ## Will figure out soon.
 
 vgg16_model = keras.applications.vgg16.VGG16()
 vgg16_model.summary()
-
 print('VGG16 done')
 
 """- **predictions (Dense)          (None, 1000)              4097000**
@@ -258,8 +249,7 @@ for layer in model.layers: layer.trainable = False
 # in each layer so that they will not be updated when we pass in our images of fake and real faces.
 
 model.add(Dense(2, activation='softmax'))
-
-# model.summary()
+model.summary()
 
 model.save('final_model')
 print('Model saved')
@@ -272,54 +262,51 @@ model.compile(optimizer='adam',
               loss='sparse_categorical_crossentropy',
               metrics=['accuracy'])
 
-# hist = model.fit(X_train,y_train, batch_size=20, epochs = 2, validation_split=0.1) # isme originally 50 epoch the
+hist = model.fit(X_train,y_train, batch_size=20, epochs = 2, validation_split=0.1) # isme originally 50 epoch the
 
-# epochs = 2 # 50
-# train_loss = hist.history['loss']
-# val_loss = hist.history['val_loss']
-# train_acc = hist.history['accuracy']
-# val_acc = hist.history['val_accuracy']
-# xc = range(epochs)
+epochs = 2 # 50
+train_loss = hist.history['loss']
+val_loss = hist.history['val_loss']
+train_acc = hist.history['accuracy']
+val_acc = hist.history['val_accuracy']
+xc = range(epochs)
 
-# plt.figure(1,figsize=(7,5))
-# plt.plot(xc,train_loss)
-# plt.plot(xc,val_loss)
-# plt.xlabel('num of Epochs')
-# plt.ylabel('loss')
-# plt.title('train_loss vs val_loss')
-# plt.grid(True)
-# plt.legend(['train','val'])
-# #print plt.style.available # use bmh, classic,ggplot for big pictures
-# plt.style.use(['classic'])
+plt.figure(1,figsize=(7,5))
+plt.plot(xc,train_loss)
+plt.plot(xc,val_loss)
+plt.xlabel('num of Epochs')
+plt.ylabel('loss')
+plt.title('train_loss vs val_loss')
+plt.grid(True)
+plt.legend(['train','val'])
+plt.style.use(['classic'])
 
-# plt.figure(2,figsize=(7,5))
-# plt.plot(xc,train_acc)
-# plt.plot(xc,val_acc)
-# plt.xlabel('num of Epochs')
-# plt.ylabel('accuracy')
-# plt.title('train_acc vs val_acc')
-# plt.grid(True)
-# plt.legend(['train','val'],loc=4)
-# #print plt.style.available # use bmh, classic,ggplot for big pictures
-# plt.style.use(['classic'])
+plt.figure(2,figsize=(7,5))
+plt.plot(xc,train_acc)
+plt.plot(xc,val_acc)
+plt.xlabel('num of Epochs')
+plt.ylabel('accuracy')
+plt.title('train_acc vs val_acc')
+plt.grid(True)
+plt.legend(['train','val'],loc=4)
+#print plt.style.available # use bmh, classic,ggplot for big pictures
+plt.style.use(['classic'])
 
-# val_loss, val_acc = model.evaluate(X_test, y_test)
-# print(val_loss)
-# print(val_acc)
+val_loss, val_acc = model.evaluate(X_test, y_test)
+print(val_loss)
+print(val_acc)
 
-# predictions = model.predict(X_test)
-# # predictions
+predictions = model.predict(X_test)
 
-# rounded_predictions=model.predict(x = X_test, batch_size=10, verbose=0) 
-# classes_x=np.argmax(rounded_predictions,axis=1)
-# for i in rounded_predictions[:10]:
-#     print(i)
+rounded_predictions=model.predict(x = X_test, batch_size=10, verbose=0) 
+classes_x=np.argmax(rounded_predictions,axis=1)
+for i in rounded_predictions[:10]: print(i)
 
-# print(y_test[1:10])
-# print(np.unique(y_test, return_counts = True))
+print(y_test[1:10])
+print(np.unique(y_test, return_counts = True))
 
-# rounded_prediction = np.array(rounded_prediction)
-# print(np.unique(rounded_prediction, return_counts = True))
+rounded_prediction = np.array(rounded_prediction)
+print(np.unique(rounded_prediction, return_counts = True))
 
 """### Performance Analysis:
 
@@ -328,9 +315,9 @@ model.compile(optimizer='adam',
 - **Predicted Data** :   Real Faces[263], Fake Faces[146]
 """
 
-# cm = confusion_matrix(y_test,rounded_prediction)
-# cm_plot_labels = ['Real', 'Fake']
-# plot_confusion_matrix(cm=cm, classes=cm_plot_labels, title='Confusion Matrix')
+cm = confusion_matrix(y_test,rounded_prediction)
+cm_plot_labels = ['Real', 'Fake']
+plot_confusion_matrix(cm=cm, classes=cm_plot_labels, title='Confusion Matrix')
 
 """## Explanation of Matrix:
 
@@ -353,8 +340,6 @@ model.compile(optimizer='adam',
 ## Predictions vs Actual.
 """
 
-## Just Run this once and you can change the number of the images mentioned for prediction and model result.
-
 ## For Image Display.
 def load_img(path):
     image = cv2.resize(path, (224, 224))
@@ -374,25 +359,23 @@ print("It's over!")
 
 """
 
-# from keras.models import load_model
+from keras.models import load_model
+model = load_model('/content/gdrive/MyDrive/complete_model.h5')
 
-# model = load_model('/content/gdrive/MyDrive/complete_model.h5')
+# Change the value of n for other images. I have chosen these images randomly.
+# Test 1
 
-## Change the value of n for other images. I have chosen these images randomly.
-## Test 1
+n = 171
+prediction = model.predict(prepare(X_test[n]))
+print("Probabilities: ",prediction)
 
-# n = 171
+x = ["Real-Face" if y_test[n]== 0 else "Fake-Face"]
+print("Actual: ",x[0])
 
-# prediction = model.predict(prepare(X_test[n]))
-# print("Probabilities: ",prediction)
+rounded_prediction=model.predict(x = prepare(X_test[n]), batch_size=10, verbose=0) 
+classes_x=np.argmax(rounded_prediction,axis=1)
 
-# x = ["Real-Face" if y_test[n]== 0 else "Fake-Face"]
-# print("Actual: ",x[0])
+plt.imshow(load_img(X_test[n]), cmap='gray')
+plt.show()
 
-# rounded_prediction=model.predict(x = prepare(X_test[n]), batch_size=10, verbose=0) 
-# classes_x=np.argmax(rounded_prediction,axis=1)
-
-# plt.imshow(load_img(X_test[n]), cmap='gray')
-# plt.show()
-
-# model.save('complete_model.h5')
+model.save('complete_model.h5')
